@@ -7,7 +7,15 @@
 /**
  * @type {import('gatsby').GatsbyConfig}
  */
-module.exports = {
+import { createRequire } from "module"
+import { dirname } from "path"
+import remarkGfm from "remark-gfm"
+import { fileURLToPath } from "url"
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const require = createRequire(import.meta.url)
+
+const config = {
   siteMetadata: {
     title: `Gatsby Starter Blog`,
     author: {
@@ -25,6 +33,13 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
+        name: `pages`,
+        path: `${__dirname}/src/pages`,
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
         path: `${__dirname}/content/blog`,
         name: `blog`,
       },
@@ -36,6 +51,7 @@ module.exports = {
         path: `${__dirname}/src/images`,
       },
     },
+
     {
       resolve: `gatsby-plugin-mdx`,
       options: {
@@ -53,8 +69,12 @@ module.exports = {
               wrapperStyle: `margin-bottom: 1.0725rem`,
             },
           },
+
           `gatsby-remark-prismjs`,
         ],
+        mdxOptions: {
+          remarkPlugins: [remarkGfm],
+        },
       },
     },
     `gatsby-transformer-sharp`,
@@ -124,3 +144,5 @@ module.exports = {
     },
   ],
 }
+
+export default config
