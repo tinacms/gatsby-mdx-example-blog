@@ -164,7 +164,6 @@ Paragraph:
 
     Code
 
-<!-- -->
 
     Paragraph:
 
