@@ -43,11 +43,13 @@ This is a paragraph.
 
 ## Header 2
 
+```md
     Header 1
     ========
 
     Header 2
     --------
+```
 
 # Header 1
 
@@ -61,12 +63,14 @@ This is a paragraph.
 
 ###### Header 6
 
+```md
     # Header 1
     ## Header 2
     ### Header 3
     #### Header 4
     ##### Header 5
     ###### Header 6
+```
 
 # Header 1
 
@@ -89,7 +93,9 @@ This is a paragraph.
 
 > Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
 
+```md
     > Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+```
 
 - Red
 - Green
@@ -162,6 +168,7 @@ Paragraph:
 
 ---
 
+```md
     * * *
 
     ***
@@ -171,6 +178,7 @@ Paragraph:
     - - -
 
     ---------------------------------------
+```
 
 This is [an example](http://example.com "Example") link.
 
@@ -178,11 +186,13 @@ This is [an example](http://example.com "Example") link.
 
 This is [an example][id] reference-style link.
 
+```md
     This is [an example](http://example.com "Example") link.
 
     [This link](http://example.com) has no title attr.
 
     This is [an example] [id] reference-style link.
+```
 
 _single asterisks_
 
@@ -192,6 +202,7 @@ _single underscores_
 
 **double underscores**
 
+```md
     *single asterisks*
 
     _single underscores_
@@ -199,6 +210,7 @@ _single underscores_
     **double asterisks**
 
     __double underscores__
+```
 
 This paragraph has some `code` in it.
 
@@ -206,4 +218,6 @@ This paragraph has some `code` in it.
 
 ![Alt Text](https://via.placeholder.com/200x50 "Image Title")
 
+```md
     ![Alt Text](https://via.placeholder.com/200x50 "Image Title")
+```
