@@ -195,15 +195,11 @@ This is [an example](http://example.com "Example") link.
 
 This is [an example][id] reference-style link.
 
-[id]: http://example.com "Optional Title"
-
     This is [an example](http://example.com "Example") link.
 
     [This link](http://example.com) has no title attr.
 
     This is [an example] [id] reference-style link.
-
-    [id]: http://example.com "Optional Title"
 
 _single asterisks_
 
