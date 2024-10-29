@@ -1,5 +1,34 @@
 /* CSS Custom Properties Definitions */
 
+h2 > a > span,
+h2,
+header > a {
+  color: #1d2c6c;
+}
+@supports (-webkit-background-clip: text) {
+  h1 {
+    background: -webkit-linear-gradient(#ea6d43, #d94217);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+html {
+  min-height: 100%;
+  background: radial-gradient(transparent, rgb(0 189 255 / 20%));
+}
+body {
+  --tw-ring-color: rgba(0, 132, 255);
+}
+h1 {
+  font-size: 72px;
+  min-height: 72px;
+}
+@supports not (-webkit-background-clip: text) {
+  h1 {
+    color: #ec4815;
+  }
+}
 :root {
   --maxWidth-none: "none";
   --maxWidth-xs: 20rem;
