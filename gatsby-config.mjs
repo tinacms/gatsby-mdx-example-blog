@@ -20,7 +20,7 @@ const config = {
     title: `Tina's personal blog`,
     author: {
       name: `Tina`,
-      summary: `the light hearted luminous lard`,
+      summary: `the light hearted vivacious lard`,
     },
     description: `A starter blog demonstrating what Gatsby can do.`,
     siteUrl: `https://gatsbystarterblogsource.gatsbyjs.io/`,
