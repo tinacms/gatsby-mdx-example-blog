@@ -17,10 +17,10 @@ const require = createRequire(import.meta.url)
 
 const config = {
   siteMetadata: {
-    title: `Gatsby Starter Blog`,
+    title: `Tina's personal blog`,
     author: {
-      name: `Kyle Mathews`,
-      summary: `who lives and works in San Francisco building useful things.`,
+      name: `Tina`,
+      summary: `the light hearted luminous lard`,
     },
     description: `A starter blog demonstrating what Gatsby can do.`,
     siteUrl: `https://gatsbystarterblogsource.gatsbyjs.io/`,
