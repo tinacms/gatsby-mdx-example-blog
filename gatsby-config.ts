@@ -4,16 +4,11 @@
  * See: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-config/
  */
 
-/**
- * @type {import('gatsby').GatsbyConfig}
- */
-import { createRequire } from "module"
 import { dirname } from "path"
 import remarkGfm from "remark-gfm"
 import { fileURLToPath } from "url"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const require = createRequire(import.meta.url)
 
 const config = {
   siteMetadata: {
