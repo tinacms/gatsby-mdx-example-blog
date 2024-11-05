@@ -5,10 +5,15 @@
  * See: https://www.gatsbyjs.com/docs/how-to/querying-data/use-static-query/
  */
 
+import { graphql, useStaticQuery } from "gatsby"
 import * as React from "react"
-import { useStaticQuery, graphql } from "gatsby"
 
-const Seo = ({ description, title, children }) => {
+type SeoProps = {
+  title: string
+  description?: string
+  children?: React.ReactNode
+}
+const Seo = ({ description, title, children }: SeoProps) => {
   const { site } = useStaticQuery(
     graphql`
       query {

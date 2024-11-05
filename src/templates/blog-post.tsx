@@ -63,7 +63,7 @@ export const Head = ({ data: { mdx: post } }) => {
   return (
     <Seo
       title={post.frontmatter.title}
-      description={post.frontmatter.description || post.excerpt}
+      description={post.frontmatter.description}
     />
   )
 }
@@ -83,7 +83,6 @@ export const pageQuery = graphql`
     }
     mdx(id: { eq: $id }) {
       id
-      excerpt(pruneLength: 160)
       frontmatter {
         title
         date(formatString: "MMMM DD, YYYY")
