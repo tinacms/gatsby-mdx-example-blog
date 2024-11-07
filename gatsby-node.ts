@@ -6,33 +6,17 @@
 import type { GatsbyNode } from "gatsby"
 import { createFilePath } from "gatsby-source-filesystem"
 import path from "path"
-
+import { AllPageData } from "./src/types"
 // Define the template for blog post
 const blogPost = path.resolve(`./src/templates/blog-post.tsx`)
 
-/**
- * @type {import('gatsby').GatsbyNode['createPages']}
- */
-export const createPages: GatsbyNode["createPages"] = async ({
+const createPages: GatsbyNode["createPages"] = async ({
   graphql,
   actions,
   reporter,
 }) => {
   const { createPage } = actions
-
-  // Get all markdown blog posts sorted by date
-  type mdxResponse = { allMdx: { nodes: mdxNode[] } }
-  type mdxNode = {
-    id: string
-    internal: {
-      contentFilePath: string
-    }
-    fields: {
-      slug: string
-    }
-  }
-
-  const result = await graphql<mdxResponse>(`
+  const result = await graphql<AllPageData>(`
     {
       allMdx(sort: { frontmatter: { date: ASC } }, limit: 1000) {
         nodes {
@@ -80,10 +64,11 @@ export const createPages: GatsbyNode["createPages"] = async ({
   }
 }
 
-/**
- * @type {import('gatsby').GatsbyNode['onCreateNode']}
- */
-exports.onCreateNode = ({ node, actions, getNode }) => {
+const onCreateNode: GatsbyNode["onCreateNode"] = ({
+  node,
+  actions,
+  getNode,
+}) => {
   const { createNodeField } = actions
 
   if (node.internal.type === `Mdx`) {
@@ -97,10 +82,9 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   }
 }
 
-/**
- * @type {import('gatsby').GatsbyNode['createSchemaCustomization']}
- */
-exports.createSchemaCustomization = ({ actions }) => {
+const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = ({
+  actions,
+}) => {
   const { createTypes } = actions
 
   // Explicitly define the siteMetadata {} object
@@ -141,3 +125,5 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
   `)
 }
+
+export { createPages, createSchemaCustomization, onCreateNode }
