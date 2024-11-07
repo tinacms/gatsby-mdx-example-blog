@@ -1,17 +1,33 @@
-import { Link, graphql } from "gatsby"
+import dateFormat from "dateformat"
+import { graphql, Link } from "gatsby"
 import * as React from "react"
-
+import { tinaField, useTina } from "tinacms/dist/react"
+import { TinaMarkdown } from "tinacms/dist/rich-text"
+import client from "../../tina/__generated__/client"
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 
-const BlogPostTemplate = ({
-  data: { previous, next, site, mdx: post },
-  location,
-  children,
-}) => {
-  const siteTitle = site.siteMetadata?.title || `Title`
+import { BlogPost, PostResponse } from "../types"
 
+const BlogPostTemplate = ({ serverData, data: { site }, location }) => {
+  console.log("serverData", serverData)
+
+  const { query, variables, nextPageData, previousPageData } = serverData
+  const { data: tinaData } = useTina({
+    data: serverData.data,
+    query,
+    variables,
+  })
+  console.log("tinaData", tinaData)
+  const siteTitle = site.siteMetadata?.title || `Title`
+  const [formattedDate, setFormattedDate] = React.useState(
+    dateFormat(tinaData.post.date, "mmmm dd, yyyy")
+  )
+  React.useEffect(() => {
+    console.log("tinaData.post.date", tinaData.post.date)
+    setFormattedDate(dateFormat(tinaData.post.date, "mmmm dd, yyyy"))
+  }, [tinaData.post.date])
   return (
     <Layout location={location} title={siteTitle}>
       <article
@@ -20,10 +36,19 @@ const BlogPostTemplate = ({
         itemType="http://schema.org/Article"
       >
         <header>
-          <h1 itemProp="headline">{post.frontmatter.title}</h1>
-          <p>{post.frontmatter.date}</p>
+          <h1
+            data-tina-field={tinaField(tinaData.post, "title")}
+            itemProp="headline"
+          >
+            {tinaData.post.title}
+          </h1>
+          <p data-tina-field={tinaField(tinaData.post, "date")}>
+            {formattedDate}
+          </p>
         </header>
-        {children}
+        <main data-tina-field={tinaField(tinaData.post, "body")}>
+          <TinaMarkdown content={tinaData.post.body} />
+        </main>
         <hr />
         <footer>
           <Bio />
@@ -40,16 +65,16 @@ const BlogPostTemplate = ({
           }}
         >
           <li>
-            {previous && (
-              <Link to={previous.fields.slug} rel="prev">
-                ← {previous.frontmatter.title}
+            {previousPageData && (
+              <Link to={previousPageData.slug} rel="prev">
+                ← {previousPageData.title}
               </Link>
             )}
           </li>
           <li>
-            {next && (
-              <Link to={next.fields.slug} rel="next">
-                {next.frontmatter.title} →
+            {nextPageData && (
+              <Link to={nextPageData.slug} rel="next">
+                {nextPageData.title} →
               </Link>
             )}
           </li>
@@ -59,51 +84,67 @@ const BlogPostTemplate = ({
   )
 }
 
-export const Head = ({ data: { mdx: post } }) => {
-  return (
-    <Seo
-      title={post.frontmatter.title}
-      description={post.frontmatter.description}
-    />
-  )
+export const Head = ({ serverData }) => {
+  console.log("serverData", serverData)
+
+  const { title, description } = serverData.data
+  return <Seo title={title} description={description} />
 }
 
 export default BlogPostTemplate
 
 export const pageQuery = graphql`
-  query BlogPostBySlug(
-    $id: String!
-    $previousPostId: String
-    $nextPostId: String
-  ) {
+  query {
     site {
       siteMetadata {
         title
       }
     }
-    mdx(id: { eq: $id }) {
-      id
-      frontmatter {
-        title
-        date(formatString: "MMMM DD, YYYY")
-        description
-      }
-    }
-    previous: mdx(id: { eq: $previousPostId }) {
-      fields {
-        slug
-      }
-      frontmatter {
-        title
-      }
-    }
-    next: mdx(id: { eq: $nextPostId }) {
-      fields {
-        slug
-      }
-      frontmatter {
-        title
-      }
-    }
   }
 `
+
+type BlogPostPageProps = {
+  pageContext: BlogPostPageContext
+}
+
+type BlogPostPageContext = {
+  relativePath: string
+  previousPostPath: string
+  nextPostPath: string
+}
+
+const mapToPostLinkData = (
+  response: PostResponse
+): Partial<BlogPost> & { slug: string; title: string } => {
+  return {
+    title: response.data.post.title,
+    slug: response.data.post._sys.breadcrumbs[0],
+  }
+}
+
+const getPostLinkData = async (path: string) => {
+  if (!path) return null
+  const post = await client.queries.post({
+    relativePath: path,
+  })
+  return mapToPostLinkData(post)
+}
+
+export async function getServerData({ pageContext }: BlogPostPageProps) {
+  const { relativePath, nextPostPath, previousPostPath } = pageContext
+  const { data, query, variables }: PostResponse = await client.queries.post({
+    relativePath: relativePath,
+  })
+  const nextPageData = await getPostLinkData(nextPostPath)
+  const previousPageData = await getPostLinkData(previousPostPath)
+
+  return {
+    props: {
+      query,
+      data,
+      variables,
+      nextPageData,
+      previousPageData,
+    },
+  }
+}

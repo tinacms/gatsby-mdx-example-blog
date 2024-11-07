@@ -1,7 +1,7 @@
 ---
+date: 2015-02-17T13:00:00.000Z
 title: Hello World
-date: "2015-05-01T22:12:03.284Z"
-description: "Hello World"
+description: Hello World
 ---
 
 This is my first post on my new fake blog! How exciting!
@@ -19,7 +19,7 @@ Oh, and here's a great quote from this Wikipedia on
 > salted duck eggs have a briny aroma, a gelatin-like egg white and a
 > firm-textured, round yolk that is bright orange-red in color.
 
-![Chinese Salty Egg](./salty_egg.jpg)
+![](/salty_egg.jpg)
 
 You can also write code blocks here!
 
@@ -37,7 +37,7 @@ const saltyDuckEgg = "chinese preserved food product"
 
 This is a paragraph.
 
-    This is a paragraph.
+This is a paragraph.
 
 # Header 1
 
@@ -84,12 +84,17 @@ This is a paragraph.
 
 ###### Header 6
 
-    # Header 1 #
-    ## Header 2 ##
-    ### Header 3 ###
-    #### Header 4 ####
-    ##### Header 5 #####
-    ###### Header 6 ######
+# Header 1
+
+## Header 2
+
+### Header 3
+
+#### Header 4
+
+##### Header 5
+
+###### Header 6
 
 > Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
 
@@ -97,34 +102,32 @@ This is a paragraph.
     > Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus. Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
 ```
 
-- Red
-- Green
-- Blue
-
 * Red
 * Green
 * Blue
-
-- Red
-- Green
-- Blue
+* Red
+* Green
+* Blue
+* Red
+* Green
+* Blue
 
 ```markdown
 - Red
 - Green
 - Blue
 
-* Red
-* Green
-* Blue
+- Red
+- Green
+- Blue
 
 - Red
 - Green
 - Blue
 ```
 
-- `code goes` here in this line
-- **bold** goes here
+* `code goes` here in this line
+* **bold** goes here
 
 ```markdown
 - `code goes` here in this line
@@ -132,8 +135,8 @@ This is a paragraph.
 ```
 
 1. Buy flour and salt
-1. Mix together with water
-1. Bake
+2. Mix together with water
+3. Bake
 
 ```markdown
 1. Buy flour and salt
@@ -142,7 +145,7 @@ This is a paragraph.
 ```
 
 1. `code goes` here in this line
-1. **bold** goes here
+2. **bold** goes here
 
 ```markdown
 1. `code goes` here in this line
@@ -151,22 +154,21 @@ This is a paragraph.
 
 Paragraph:
 
-    Code
+Code
 
+Paragraph:
 
-    Paragraph:
+Code
 
-        Code
+***
 
----
+***
 
----
+***
 
----
+***
 
----
-
----
+***
 
 ```md
     * * *
@@ -184,7 +186,7 @@ This is [an example](http://example.com "Example") link.
 
 [This link](http://example.com) has no title attr.
 
-This is [an example][id] reference-style link.
+This is \[an example]\[id] reference-style link.
 
 ```md
     This is [an example](http://example.com "Example") link.
@@ -194,9 +196,9 @@ This is [an example][id] reference-style link.
     This is [an example] [id] reference-style link.
 ```
 
-_single asterisks_
+*single asterisks*
 
-_single underscores_
+*single underscores*
 
 **double asterisks**
 
@@ -214,7 +216,7 @@ _single underscores_
 
 This paragraph has some `code` in it.
 
-    This paragraph has some `code` in it.
+This paragraph has some `code` in it.
 
 ![Alt Text](https://via.placeholder.com/200x50 "Image Title")
 
