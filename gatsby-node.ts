@@ -3,21 +3,20 @@
  *
  * See: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/
  */
-
-const path = require(`path`)
-const { createFilePath } = require(`gatsby-source-filesystem`)
-
+import type { GatsbyNode } from "gatsby"
+import { createFilePath } from "gatsby-source-filesystem"
+import path from "path"
+import { AllPageData } from "./src/types"
 // Define the template for blog post
-const blogPost = path.resolve(`./src/templates/blog-post.js`)
+const blogPost = path.resolve(`./src/templates/blog-post.tsx`)
 
-/**
- * @type {import('gatsby').GatsbyNode['createPages']}
- */
-exports.createPages = async ({ graphql, actions, reporter }) => {
+const createPages: GatsbyNode["createPages"] = async ({
+  graphql,
+  actions,
+  reporter,
+}) => {
   const { createPage } = actions
-
-  // Get all markdown blog posts sorted by date
-  const result = await graphql(`
+  const result = await graphql<AllPageData>(`
     {
       allMdx(sort: { frontmatter: { date: ASC } }, limit: 1000) {
         nodes {
@@ -41,7 +40,7 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
     return
   }
 
-  const posts = result.data.allMdx.nodes
+  const posts = result!.data!.allMdx.nodes
 
   // Create blog posts pages
   // But only if there's at least one markdown file found at "content/blog" (defined in gatsby-config.js)
@@ -65,10 +64,11 @@ exports.createPages = async ({ graphql, actions, reporter }) => {
   }
 }
 
-/**
- * @type {import('gatsby').GatsbyNode['onCreateNode']}
- */
-exports.onCreateNode = ({ node, actions, getNode }) => {
+const onCreateNode: GatsbyNode["onCreateNode"] = ({
+  node,
+  actions,
+  getNode,
+}) => {
   const { createNodeField } = actions
 
   if (node.internal.type === `Mdx`) {
@@ -82,10 +82,9 @@ exports.onCreateNode = ({ node, actions, getNode }) => {
   }
 }
 
-/**
- * @type {import('gatsby').GatsbyNode['createSchemaCustomization']}
- */
-exports.createSchemaCustomization = ({ actions }) => {
+const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = ({
+  actions,
+}) => {
   const { createTypes } = actions
 
   // Explicitly define the siteMetadata {} object
@@ -126,3 +125,5 @@ exports.createSchemaCustomization = ({ actions }) => {
     }
   `)
 }
+
+export { createPages, createSchemaCustomization, onCreateNode }
