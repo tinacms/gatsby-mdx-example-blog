@@ -1,13 +1,15 @@
 import { Link, graphql } from "gatsby"
 import * as React from "react"
 
+import formatDate from "dateformat"
+import client from "../../tina/__generated__/client"
 import Bio from "../components/bio"
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 
-const BlogIndex = ({ data, location }) => {
+const BlogIndex = ({ data, location, serverData }) => {
   const siteTitle = data.site.siteMetadata?.title || `Title`
-  const posts = data.allMdx.nodes
+  const posts = serverData.posts
 
   if (posts.length === 0) {
     return (
@@ -27,10 +29,11 @@ const BlogIndex = ({ data, location }) => {
       <Bio />
       <ol style={{ listStyle: `none` }}>
         {posts.map(post => {
-          const title = post.frontmatter.title || post.fields.slug
+          const title = post.title || post.slug
+          const formattedDate = formatDate(post.date, "mmmm mm, yyyy")
 
           return (
-            <li key={post.fields.slug}>
+            <li key={post.slug}>
               <article
                 className="post-list-item"
                 itemScope
@@ -38,16 +41,16 @@ const BlogIndex = ({ data, location }) => {
               >
                 <header>
                   <h2>
-                    <Link to={post.fields.slug} itemProp="url">
+                    <Link to={post.slug} itemProp="url">
                       <span itemProp="headline">{title}</span>
                     </Link>
                   </h2>
-                  <small>{post.frontmatter.date}</small>
+                  <small>{formattedDate}</small>
                 </header>
                 <section>
                   <p
                     dangerouslySetInnerHTML={{
-                      __html: post.frontmatter.description,
+                      __html: post.description,
                     }}
                     itemProp="description"
                   />
@@ -77,17 +80,23 @@ export const pageQuery = graphql`
         title
       }
     }
-    allMdx(sort: { frontmatter: { date: DESC } }) {
-      nodes {
-        fields {
-          slug
-        }
-        frontmatter {
-          date(formatString: "MMMM DD, YYYY")
-          title
-          description
-        }
-      }
-    }
   }
 `
+
+export async function getServerData() {
+  const posts = await client.queries.postConnection()
+  return {
+    props: {
+      posts: posts.data.postConnection.edges.map(edge => {
+        const {
+          title,
+          body,
+          date,
+          _sys: { breadcrumbs },
+          description,
+        } = edge.node
+        return { title, body, date, slug: breadcrumbs[0], description }
+      }),
+    },
+  }
+}

@@ -3,10 +3,13 @@
  *
  * See: https://www.gatsbyjs.com/docs/reference/config-files/gatsby-node/
  */
+
+import express from "express"
 import type { GatsbyNode } from "gatsby"
 import { createFilePath } from "gatsby-source-filesystem"
 import path from "path"
-import { AllPageData } from "./src/types"
+import { AllPostResponse, BlogPost } from "./src/types"
+import client from "./tina/__generated__/client"
 // Define the template for blog post
 const blogPost = path.resolve(`./src/templates/blog-post.tsx`)
 
@@ -16,52 +19,35 @@ const createPages: GatsbyNode["createPages"] = async ({
   reporter,
 }) => {
   const { createPage } = actions
-  const result = await graphql<AllPageData>(`
-    {
-      allMdx(sort: { frontmatter: { date: ASC } }, limit: 1000) {
-        nodes {
-          id
-          internal {
-            contentFilePath
-          }
-          fields {
-            slug
-          }
-        }
-      }
-    }
-  `)
 
-  if (result.errors) {
-    reporter.panicOnBuild(
-      `There was an error loading your blog posts`,
-      result.errors
-    )
-    return
-  }
-
-  const posts = result!.data!.allMdx.nodes
+  const result = await client.queries.postConnection()
+  const posts: BlogPost[] = mapResponse(result)
 
   // Create blog posts pages
   // But only if there's at least one markdown file found at "content/blog" (defined in gatsby-config.js)
   // `context` is available in the template as a prop and as a variable in GraphQL
 
-  if (posts.length > 0) {
-    posts.forEach((post, index) => {
-      const previousPostId = index === 0 ? null : posts[index - 1].id
-      const nextPostId = index === posts.length - 1 ? null : posts[index + 1].id
-
+  posts.map((post, index) => {
+    if (posts.length > 0) {
+      const previousPostPath =
+        index === 0 ? null : posts[index - 1].relativePath
+      const nextPostPath =
+        index === posts.length - 1 ? null : posts[index + 1].id
       createPage({
-        path: post.fields.slug,
-        component: `${blogPost}?__contentFilePath=${post.internal.contentFilePath}`,
+        path: post.slug,
+        component: blogPost,
         context: {
-          id: post.id,
-          previousPostId,
-          nextPostId,
+          relativePath: post.relativePath,
+          previousPostPath,
+          nextPostPath,
         },
       })
-    })
-  }
+    }
+  })
+}
+
+const onCreateDevServer: GatsbyNode["onCreateDevServer"] = ({ app }) => {
+  app.use("/admin", express.static("public/admin"))
 }
 
 const onCreateNode: GatsbyNode["onCreateNode"] = ({
@@ -80,6 +66,23 @@ const onCreateNode: GatsbyNode["onCreateNode"] = ({
       value,
     })
   }
+}
+
+const mapResponse = (postResponse: AllPostResponse): BlogPost[] => {
+  const mappedResponse = postResponse.data.postConnection.edges.map(edge => {
+    const {
+      title,
+      body,
+      _sys: { breadcrumbs, relativePath },
+    } = edge.node
+    return {
+      relativePath,
+      title,
+      body,
+      slug: breadcrumbs[0],
+    }
+  })
+  return mappedResponse
 }
 
 const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = ({
@@ -113,7 +116,6 @@ const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = ({
       frontmatter: Frontmatter
       fields: Fields
     }
-
     type Frontmatter {
       title: String
       description: String
@@ -126,4 +128,9 @@ const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = ({
   `)
 }
 
-export { createPages, createSchemaCustomization, onCreateNode }
+export {
+  createPages,
+  createSchemaCustomization,
+  onCreateDevServer,
+  onCreateNode,
+}

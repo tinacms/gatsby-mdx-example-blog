@@ -1,5 +1,8 @@
 /* CSS Custom Properties Definitions */
 
+img {
+  max-width: 630px;
+}
 h2 > a > span,
 h2,
 header > a {
